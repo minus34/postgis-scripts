@@ -1,13 +1,13 @@
----------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------
 -- HEX GRID - Sample usage script
----------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------
 --
 -- Hugh Saalmans (@minus34)
 -- 2015/04/10
 --
 -- DESCRIPTION:
 -- 
--- Script creates a new table and populates it with a grid of ~18 million hexagons covering Australia using the hex grid function.
+-- Script creates a new table and populates it with ~18 million hexagons covering Australia, using the hex grid function.
 -- Takes under 10 mins on my 8 core, 16Gb RAM commodity PC to produce the hexagons, and another 10 mins to index & cluster.
 --
 -- Coordinate systems (SRIDs) used:
@@ -19,7 +19,7 @@
 --
 -- This work is licensed under the Apache License, Version 2: https://www.apache.org/licenses/LICENSE-2.0
 --
----------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------
 
 --Create table for results
 DROP TABLE IF ExISTS my_hex_grid;
@@ -30,7 +30,8 @@ CREATE TABLE my_hex_grid (
 WITH (OIDS=FALSE);
 
 -- Create 1km2 hex grid for Australia (note: extents allow for the effects of the Albers Equal Area projection)
--- Input parameters: hex_grid(areakm2 float, xmin float, ymin float, xmax float, ymax float, inputsrid integer, workingsrid integer, ouputsrid integer)
+-- Input parameters: hex_grid(areakm2 float, xmin float, ymin float, xmax float, ymax float, inputsrid integer,
+--   workingsrid integer, ouputsrid integer)
 INSERT INTO my_hex_grid (geom)
 select hex_grid(1.0, 108.0, -44.0, 151.0, -8.0, 4283, 3577, 4283);
 

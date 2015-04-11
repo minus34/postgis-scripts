@@ -7,7 +7,7 @@
 --
 -- DESCRIPTION:
 -- 
--- Script creates a new table and populates it with ~18 million hexagons covering Australia, using the hex grid function.
+-- Script creates a new table and populates it with ~17 million hexagons covering Australia, using the hex grid function.
 -- Takes under 10 mins on my 8 core, 16Gb RAM commodity PC to produce the hexagons, and another 10 mins to index & cluster.
 --
 -- Coordinate systems (SRIDs) used:
@@ -22,10 +22,10 @@
 --------------------------------------------------------------------------------------------------------------------------------
 
 --Create table for results
-DROP TABLE IF ExISTS my_hex_grid;
+DROP TABLE IF EXISTS my_hex_grid;
 CREATE TABLE my_hex_grid (
-  gid SERIAL not null primary key,
-  geom GEOMETRY('POLYGON', 4283, 2) not null
+  gid SERIAL NOT NULL PRIMARY KEY,
+  geom GEOMETRY('POLYGON', 4283, 2) NOT NULL
 )
 WITH (OIDS=FALSE);
 
@@ -33,7 +33,7 @@ WITH (OIDS=FALSE);
 -- Input parameters: hex_grid(areakm2 float, xmin float, ymin float, xmax float, ymax float, inputsrid integer,
 --   workingsrid integer, ouputsrid integer)
 INSERT INTO my_hex_grid (geom)
-select hex_grid(1.0, 108.0, -44.0, 151.0, -8.0, 4283, 3577, 4283);
+SELECT hex_grid(1.0, 108.0, -44.0, 151.0, -8.0, 4283, 3577, 4283);
 
 -- Create spatial index
 CREATE INDEX my_hex_grid_geom_idx ON my_hex_grid USING gist (geom);
@@ -45,6 +45,6 @@ CLUSTER my_hex_grid USING my_hex_grid_geom_idx;
 ANALYZE my_hex_grid;
 
 --Check accuracy of results (in square km)
-SELECT (SELECT Count(*) From my_hex_grid) AS hexagon_count,
-       (SELECT (MIN(ST_Area(geom::geography, FALSE)) / 1000000.0)::numeric(10,3) From my_hex_grid) AS min_area,
-       (SELECT (MAX(ST_Area(geom::geography, FALSE)) / 1000000.0)::numeric(10,3) From my_hex_grid) AS max_area;
+SELECT (SELECT Count(*) FROM my_hex_grid) AS hexagon_count,
+       (SELECT (MIN(ST_Area(geom::GEOGRAPHY, FALSE)) / 1000000.0)::NUMERIC(10,3) FROM my_hex_grid) AS min_area,
+       (SELECT (MAX(ST_Area(geom::GEOGRAPHY, FALSE)) / 1000000.0)::NUMERIC(10,3) FROM my_hex_grid) AS max_area;

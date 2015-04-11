@@ -57,21 +57,21 @@
 --
 --------------------------------------------------------------------------------------------------------------------------------
 
---DROP FUNCTION IF EXISTS hex_grid(areakm2 float, xmin float, ymin float, xmax float, ymax float, inputsrid integer,
---  workingsrid integer, ouputsrid integer);
-CREATE OR REPLACE FUNCTION hex_grid(areakm2 float, xmin float, ymin float, xmax float, ymax float, inputsrid integer,
-  workingsrid integer, ouputsrid integer)
+--DROP FUNCTION IF EXISTS hex_grid(areakm2 FLOAT, xmin FLOAT, ymin FLOAT, xmax FLOAT, ymax FLOAT, inputsrid INTEGER,
+--  workingsrid INTEGER, ouputsrid INTEGER);
+CREATE OR REPLACE FUNCTION hex_grid(areakm2 FLOAT, xmin FLOAT, ymin FLOAT, xmax FLOAT, ymax FLOAT, inputsrid INTEGER,
+  workingsrid INTEGER, ouputsrid INTEGER)
   RETURNS SETOF geometry AS
 $BODY$
 
 DECLARE
   minpnt GEOMETRY;
   maxpnt GEOMETRY;
-  x1 integer;
-  y1 integer;
-  x2 integer;
-  y2 integer;
-  aream2 float;
+  x1 INTEGER;
+  y1 INTEGER;
+  x2 INTEGER;
+  y2 INTEGER;
+  aream2 FLOAT;
   qtrwidthfloat FLOAT;
   qtrwidth INTEGER;
   halfheight INTEGER;
@@ -83,10 +83,10 @@ BEGIN
   maxpnt = ST_Transform(ST_SetSRID(ST_MakePoint(xmax, ymax), inputsrid), workingsrid);
 
   -- Get grid extents in working SRID coords
-  x1 = ST_X(minpnt)::integer;
-  y1 = ST_Y(minpnt)::integer;
-  x2 = ST_X(maxpnt)::integer;
-  y2 = ST_Y(maxpnt)::integer;
+  x1 = ST_X(minpnt)::INTEGER;
+  y1 = ST_Y(minpnt)::INTEGER;
+  x2 = ST_X(maxpnt)::INTEGER;
+  y2 = ST_Y(maxpnt)::INTEGER;
 
   -- Get height and width of hexagon - FLOOR and CEILING are used to get the hexagon size closer to the requested input area
   aream2 := areakm2 * 1000000.0;
@@ -97,9 +97,9 @@ BEGIN
 
   -- Return the hexagons - done in pairs, with one offset from the other
   RETURN QUERY (
-    SELECT ST_Transform(ST_SetSRID(ST_Translate(geom, x_series::float, y_series::float), workingsrid), ouputsrid) AS geom
-      from generate_series(x1, x2, (qtrwidth * 6)) as x_series,
-           generate_series(y1, y2, (halfheight * 2)) as y_series,
+    SELECT ST_Transform(ST_SetSRID(ST_Translate(geom, x_series::FLOAT, y_series::FLOAT), workingsrid), ouputsrid) AS geom
+      FROM generate_series(x1, x2, (qtrwidth * 6)) AS x_series,
+           generate_series(y1, y2, (halfheight * 2)) AS y_series,
            (
              SELECT ST_GeomFromText(
                format('POLYGON((0 0, %s %s, %s %s, %s %s, %s %s, %s %s, 0 0))',
@@ -109,7 +109,7 @@ BEGIN
                  qtrwidth * 3, halfheight * -1,
                  qtrwidth, halfheight * -1
                )
-             ) as geom
+             ) AS geom
              UNION
              SELECT ST_Translate(
                ST_GeomFromText(
@@ -122,7 +122,7 @@ BEGIN
                  )
                )
              , qtrwidth * 3, halfheight) as geom
-           ) as two_hex);
+           ) AS two_hex);
 
 END$BODY$
   LANGUAGE plpgsql VOLATILE

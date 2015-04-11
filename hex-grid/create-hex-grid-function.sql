@@ -7,49 +7,48 @@
 --
 -- DESCRIPTION:
 -- 
--- Function returns a grid of mathmatically correct hexagonal polyons.
--- Useful for hexbinning (aka the art of mapping clusters of information with unbiased boundaries).
+-- Function returns a grid of mathmatically correct hexagonal polygons.
+-- Useful for hexbinning (aka the art of mapping clusters of information unbiased by political/historical/statistical boundaries).
 --
 -- INPUT
 --
 --   areakm2     : area of each hexagon in square km.
---               - note, hexagon size could be off slightly due to some coordinate rounding required in the calcs.
+--                   - note: hexagon size can be off slightly due to coordinate rounding in the calcs.
 --
---   xmin, ymin  : min coords of the grid.
+--   xmin, ymin  : min coords of the grid extents.
 --
---   xmax, ymax  : max coords of the grid.
+--   xmax, ymax  : max coords of the grid extents.
 --
 --   inputsrid   : the coordinate system (SRID) of the input min/max coords.
 --
 --   workingsrid : the SRID used to process the polygons.
---               - SRID must be a projected coordinate system (i.e in metres) as the calcs require integers, so degrees are out.
---               - should be an equal area SRID such as Albers or Lambert Azimuthal (e.g. 3577 for Australia, 2163 for the US).
---               - using a Mercator projection will NOT return hexagons of equal area (don't try it in Greenland).
+--                   - SRID must be a projected coordinate system (i.e. in metres) as the calcs require integers. So degrees are out.
+--                   - should be an equal area SRID such as Albers or Lambert Azimuthal (e.g. 3577 for Australia, 2163 for the US).
+--                   - using a Mercator projection will NOT return hexagons of equal area due to its distortions (don't try it in Greenland).
 --
 --   ouputsrid   : the SRID of the output polygons.
 --
 -- NOTES
 --
---   This code is based on this PostGIS Wiki article: https://trac.osgeo.org/postgis/wiki/UsersWikiGenerateHexagonalGrid
---
---   Dimension calcs are based on formulae from: http://hexnet.org/content/hexagonal-geometry
---
 --   Hexagon height & width are rounded up & down to the nearest metre, hence the area may be off slightly.
---   This is due the use of the Postgres generate_series function which doesn't support floats.
+--   This is due to the Postgres generate_series function which doesn't support floats.
 --
 --   Why are my areas wrong in QGIS, MapInfo, etc...?
---      Let's assume you created WGS84 lat/long hexagons, you may have noticted the areas differ by up to 50% in a desktop GIS tool like QGIS or MapInfo Pro.
---      This is due to the way they 'project' geographic coord systems like WGS84 lat/long.
---      Running the following query in PostGIS will confirm the difference in area within your hex grid:
+--      Let's assume you created WGS84 lat/long hexagons, you may have noticed the areas differ by almost half in a desktop GIS tool like QGIS or MapInfo Pro.
+--      This is due to the way those tools display geographic coordinate systems like WGS84 lat/long.
+--      Running the following query in PostGIS will confirm the min & max sizes of your hexagons (in km2):
 --
 --         SELECT (SELECT (MIN(ST_Area(geom::geography, FALSE)) / 1000000.0)::numeric(10,3) From my_hex_grid) AS minarea,
 --               (SELECT (MAX(ST_Area(geom::geography, FALSE)) / 1000000.0)::numeric(10,3) From my_hex_grid) AS maxarea;
 --
---   Hey, why doesn't the grid cover the area I defined using my min/max coords?
---      Assuming you used an equal area projection, the projection caused your extents to describe a conical shape, not a rectangular one
---      - and the conical area didn't cover everything you wanted to include.
---      If you're feeling a bit bored - learn more about projections and distortions here: http://www.icsm.gov.au/mapping/about_projections.html
+--   Hey, why doesn't the grid cover the area I defined using my min/max extents?
+--      Assuming you used lat/long extents and processed the grid with an equal area projection, the projection caused your min/max coords to describe
+--      a conical shape, not a rectangular one - and the conical area didn't cover everything you wanted to include.
+--      If you're feeling a bit bored - learn why projections distort things here: http://www.icsm.gov.au/mapping/about_projections.html
 --
+--   This code is based on this PostGIS Wiki article: https://trac.osgeo.org/postgis/wiki/UsersWikiGenerateHexagonalGrid
+--
+--   Dimension calcs are based on formulae from: http://hexnet.org/content/hexagonal-geometry
 --
 -- LICENSE
 --
@@ -80,20 +79,20 @@ BEGIN
   minpnt = ST_Transform(ST_SetSRID(ST_MakePoint(xmin, ymin), inputsrid), workingsrid);
   maxpnt = ST_Transform(ST_SetSRID(ST_MakePoint(xmax, ymax), inputsrid), workingsrid);
 
-  -- Get bounds in working SRID coords
+  -- Get grid extents in working SRID coords
   x1 = ST_X(minpnt)::integer;
   y1 = ST_Y(minpnt)::integer;
   x2 = ST_X(maxpnt)::integer;
   y2 = ST_Y(maxpnt)::integer;
 
-  -- Get height and width of hexagon - FLOOR and CEILING is used to get the hexagon size closer to the input area
-  aream2 = areakm2 * 1000000.0;
+  -- Get height and width of hexagon - a combination of FLOOR and CEILING is used to get the hexagon size closer to the requested input area
+  aream2 := areakm2 * 1000000.0;
   qtrwidthfloat := sqrt(aream2/(sqrt(3.0) * (3.0/2.0))) / 2.0;
   
   qtrwidth := FLOOR(qtrwidthfloat);
   halfheight := CEILING(qtrwidthfloat * sqrt(3.0));
 
-  -- Return the hexagons - done in pairs with one offset
+  -- Return the hexagons - done in pairs, with one offset from the other
   RETURN QUERY (SELECT ST_Transform(ST_SetSRID(ST_Translate(geom, x_series::float, y_series::float), workingsrid), ouputsrid) AS geom
     from generate_series(x1, x2, (qtrwidth * 6)) as x_series,
          generate_series(y1, y2, (halfheight * 2)) as y_series,

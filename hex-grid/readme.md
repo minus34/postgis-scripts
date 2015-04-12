@@ -4,7 +4,7 @@
 
 This PostGIS function returns a grid of mathematically correct hexagonal polygons.
 
-Useful for hexbinning (the art of mapping clusters of information unbiased by political/historical/statistical boundaries).
+Useful for hexbinning (aka the art of mapping clusters of information unbiased by political/historical/statistical boundaries).
 
 ## Usage
 

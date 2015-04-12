@@ -26,7 +26,7 @@ See the 2 sample usage scripts to see how to create a national hex grid, using t
 
 ## Output
 
-A set of hexagonal polygons as geometries
+A set of hexagonal polygons as PostGIS geometries
 
 ## Notes
 

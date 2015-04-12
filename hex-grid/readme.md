@@ -6,7 +6,11 @@ This PostGIS function returns a grid of mathematically correct hexagonal polygon
 
 Useful for hexbinning (the art of mapping clusters of information unbiased by political/historical/statistical boundaries).
 
-## Input
+## Usage
+
+See the 2 sample usage scripts to see how to create a national hex grid.
+
+### Input
 
 | Parameter       | Description
 | ----------- | :-------------

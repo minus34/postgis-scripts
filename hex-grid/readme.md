@@ -47,3 +47,8 @@ SELECT (SELECT (MIN(ST_Area(geom::geography, FALSE)) / 1000000.0)::NUMERIC(10,3)
 ## License
 
 This work is licensed under the Apache License, Version 2: https://www.apache.org/licenses/LICENSE-2.0
+
+## Sample
+
+![alt text](https://github.com/minus34/postgis-scripts/blob/master/hex-grid/sample-images/syd-hex-grid.png "Voila, hexagons!")
+

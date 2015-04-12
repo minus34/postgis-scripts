@@ -24,6 +24,10 @@ See the 2 sample usage scripts to see how to create a national hex grid, using t
 |             | - Using a Mercator projection will NOT return hexagons of equal area (don't try it in Greenland).
 | ouputsrid   | The SRID of the output hexagons.
 
+## Output
+
+A set of hexagonal polygons as geometries
+
 ## Notes
 
 - **Hexagon height & width** are rounded up & down to the nearest metre, hence the area may be off slightly.  This is due to the Postgres generate_series function which doesn't support floats.

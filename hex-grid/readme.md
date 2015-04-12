@@ -14,13 +14,13 @@ See the 2 sample usage scripts to see how to create a national hex grid.
 
 | Parameter       | Description
 | ----------- | :-------------
-| areakm2     | Area of each hexagon in square km. Hexagon size can be off slightly due to coordinate rounding in the calcs.
+| areakm2     | Area of each hexagon in square km. Output hexagon sizes can be off slightly due to coordinate rounding in the calcs.
 | xmin,ymin   | Minimum coordinates of the grid extents (i.e. bottom, left).
 | xmax,ymax   | Maximum coordinates of the grid extents (i.e. top, right).
-| inputsrid   | The SRID of the min/max coordinates.
+| inputsrid   | The coordinate system (SRID) of the min/max coordinates.
 | workingsrid | The SRID used to process the hexagons:
 |             | - SRID must be a projected coord sys (i.e. in metres) as the calcs require ints. Degrees are out.
-|             | - Should be an equal area SRID such as Albers or Lambert Azimuthal (e.g. Australia = 3577, US = 2163).
+|             | - Should be an equal area SRID- i.e. Albers or Lambert Azimuthal (e.g. Australia = 3577, US = 2163).
 |             | - Using a Mercator projection will NOT return hexagons of equal area due to its distortions (don't try it in Greenland).
 | ouputsrid   | The SRID of the output hexagons.
 

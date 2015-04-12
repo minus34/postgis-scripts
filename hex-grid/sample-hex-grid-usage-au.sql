@@ -22,29 +22,29 @@
 --------------------------------------------------------------------------------------------------------------------------------
 
 --Create table for results
-DROP TABLE IF EXISTS my_hex_grid;
-CREATE TABLE my_hex_grid (
+DROP TABLE IF EXISTS au_hex_grid;
+CREATE TABLE au_hex_grid (
   gid SERIAL NOT NULL PRIMARY KEY,
   geom GEOMETRY('POLYGON', 4283, 2) NOT NULL
 )
 WITH (OIDS=FALSE);
 
--- Create 1km2 hex grid for Australia (note: extents allow for the effects of the Albers Equal Area projection)
+-- Create 1km2 hex grid (note: extents allow for the effects of the working projection used)
 -- Input parameters: hex_grid(areakm2 float, xmin float, ymin float, xmax float, ymax float, inputsrid integer,
 --   workingsrid integer, ouputsrid integer)
-INSERT INTO my_hex_grid (geom)
+INSERT INTO au_hex_grid (geom)
 SELECT hex_grid(1.0, 108.0, -44.0, 151.0, -8.0, 4283, 3577, 4283);
 
 -- Create spatial index
-CREATE INDEX my_hex_grid_geom_idx ON my_hex_grid USING gist (geom);
+CREATE INDEX au_hex_grid_geom_idx ON au_hex_grid USING gist (geom);
 
 -- Cluster table by spatial index (for spatial query performance)
-CLUSTER my_hex_grid USING my_hex_grid_geom_idx;
+CLUSTER au_hex_grid USING au_hex_grid_geom_idx;
 
 -- Update stats on table
-ANALYZE my_hex_grid;
+ANALYZE au_hex_grid;
 
 --Check accuracy of results (in square km)
-SELECT (SELECT Count(*) FROM my_hex_grid) AS hexagon_count,
-       (SELECT (MIN(ST_Area(geom::GEOGRAPHY, FALSE)) / 1000000.0)::NUMERIC(10,3) FROM my_hex_grid) AS min_area,
-       (SELECT (MAX(ST_Area(geom::GEOGRAPHY, FALSE)) / 1000000.0)::NUMERIC(10,3) FROM my_hex_grid) AS max_area;
+SELECT (SELECT Count(*) FROM au_hex_grid) AS hexagon_count,
+       (SELECT (MIN(ST_Area(geom::GEOGRAPHY, FALSE)) / 1000000.0)::NUMERIC(10,3) FROM au_hex_grid) AS min_area,
+       (SELECT (MAX(ST_Area(geom::GEOGRAPHY, FALSE)) / 1000000.0)::NUMERIC(10,3) FROM au_hex_grid) AS max_area;

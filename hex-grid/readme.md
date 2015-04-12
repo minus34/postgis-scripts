@@ -8,13 +8,13 @@ Useful for hexbinning (aka the art of mapping clusters of data unbiased by polit
 
 ## Usage
 
-See the 2 sample usage scripts to see how to create a national hex grid.
+See the 2 sample usage scripts to see how to create a national hex grid, using the function.
 
 ## Inputs
 
 | Parameter       | Description
 | ----------- | :-------------
-| areakm2     | Area of each hexagon in square km. Output hexagon sizes can be off slightly due to coordinate rounding in the calcs.
+| areakm2     | Area of each hexagon in square km. Note: output hexagon sizes can be off slightly due to coordinate rounding in the calcs.
 | xmin,ymin   | Minimum coordinates of the grid extents (i.e. bottom, left).
 | xmax,ymax   | Maximum coordinates of the grid extents (i.e. top, right).
 | inputsrid   | The coordinate system (SRID) of the min/max coordinates.

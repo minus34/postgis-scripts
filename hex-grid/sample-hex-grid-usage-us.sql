@@ -7,8 +7,8 @@
 --
 -- DESCRIPTION:
 -- 
--- Script creates a new table and populates it with ~ million hexagons covering mainland US (minus Alaska), using the hex grid function.
--- Takes under 10 mins on my 8 core, 16Gb RAM commodity PC to produce the hexagons, and another 10 mins to index & cluster.
+-- Script creates a new table and populates it with ~14 million hexagons covering mainland US (minus Alaska), using the hex grid function.
+-- Takes under 5 mins on my 8 core, 16Gb RAM commodity PC to produce the hexagons, and another 15 mins to index & cluster.
 --
 -- Coordinate systems (SRIDs) used:
 --   input:   WGS84 lat/long - SRID 4326

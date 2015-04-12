@@ -7,7 +7,7 @@ Useful for hexbinning (the art of mapping clusters of information unbiased by po
 
 **INPUT**
 
-  areakm2     : area of each hexagon in square km.
+areakm2 : area of each hexagon in square km.
                   - note: hexagon size can be off slightly due to coordinate rounding in the calcs.
 
   xmin, ymin  : min coords of the grid extents.
@@ -23,7 +23,7 @@ Useful for hexbinning (the art of mapping clusters of information unbiased by po
 
   ouputsrid   : the SRID of the output polygons.
 
-** NOTES**
+**NOTES**
 
   Hexagon height & width are rounded up & down to the nearest metre, hence the area may be off slightly.
   This is due to the Postgres generate_series function which doesn't support floats.

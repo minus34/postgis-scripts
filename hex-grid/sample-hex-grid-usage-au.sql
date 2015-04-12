@@ -8,7 +8,7 @@
 -- DESCRIPTION:
 -- 
 -- Script creates a new table and populates it with ~17 million hexagons covering Australia, using the hex grid function.
--- Takes about 5 mins on my 8 core, 16Gb RAM commodity PC to produce the hexagons, and another 10 mins to index & cluster.
+-- Takes about 5 mins on my 8 core, 16Gb RAM commodity PC to produce the hexagons, and another 15 mins to index & cluster.
 --
 -- Coordinate systems (SRIDs) used:
 --   input:   GDA94 lat/long - SRID 4283

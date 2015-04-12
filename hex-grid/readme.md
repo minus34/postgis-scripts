@@ -10,7 +10,7 @@ Useful for hexbinning (the art of mapping clusters of information unbiased by po
 
 See the 2 sample usage scripts to see how to create a national hex grid.
 
-### Input
+## Inputs
 
 | Parameter       | Description
 | ----------- | :-------------

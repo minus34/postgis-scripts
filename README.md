@@ -4,4 +4,4 @@ A collection of useful PostGIS functions and usage scripts that will grow over t
 
 **hex-grid**
 
-Create a hexagonal grid for visualisation and analysis
+Creates a hexagonal grid of polygons for visualisation and analysis

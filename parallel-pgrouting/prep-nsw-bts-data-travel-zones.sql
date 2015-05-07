@@ -184,9 +184,9 @@ COMMIT;
 -- INSERT INTO tz_nsw_2011_origin_routes
 -- SELECT * FROM tz_routes('SELECT * FROM tz_nsw_2011_vehicles LIMIT 600');
 
--- Create routes using parallel processing
+-- Create routes using parallel processing (only support inserts)
 SELECT parsel('tz_nsw_2011_vehicles' -- table to parallel process
-      ,'gid' -- bdy id field (must be an integer)
+      ,'gid' -- id field of table to parallel process (must be an integer)
       ,'SELECT * FROM tz_routes(''SELECT * FROM tz_nsw_2011_vehicles AS fred'')' -- the query to insert
       ,'tz_nsw_2011_origin_routes' -- table (and fields) to insert the results into
       ,'fred' -- table to parallel process aliasname

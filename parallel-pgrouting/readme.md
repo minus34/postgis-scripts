@@ -16,6 +16,12 @@ This is reasonably advanced use of PostGIS with dblink, use with caution and not
 
 One thing - don't apply more than 75% of your CPUs, things might freeze up...
 
+## Acknowledgements
+
+Parallel processing code was derived from Mike Gleeson's post:
+
+http://geeohspatial.blogspot.com.au/2013/12/a-simple-function-for-parallel-queries_18.html
+
 ## License
 
 This work is licensed under the Apache License, Version 2: https://www.apache.org/licenses/LICENSE-2.0

@@ -1,5 +1,9 @@
 # parallel-processing
 
+
+NOTE: THIS IS A WORKS IN PROGRESS - CURRENTLY DOESN'T WORK IN POSTGRES 9.4
+
+
 ## Description
 
 A Postgres function to enable simple parallel processing.

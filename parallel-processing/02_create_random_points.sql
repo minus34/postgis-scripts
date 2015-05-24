@@ -91,7 +91,7 @@ SELECT parsel('mb_2011_aust'
       ,'SELECT pnts.mb_code11, bdys.mb_code11 FROM mb_1m_random_points AS pnts JOIN mb_2011_aust AS bdys ON ST_Contains(bdys.geom, pnts.geom)'
       ,'points_mb'
       ,'bdys'
-      ,16);
+      ,7);
 
 select Count(*) from points_mb; -- ~1m = 1,019,910 records, ~21m = 21,458,707 records
 

@@ -14,7 +14,25 @@ A mid-level Windows 32 CPU server with an SSD hard drive has seen improvements o
 
 ## How does it work 
 
-.....
+Using an integer ID (mandatory!) on the table to parallise the query on - the script converts a single insert query into several queries that process a range of IDs.  e.g it converts this:
+
+INSERT INTO theOutputTable
+SELECT pnts.gid, polys.gid FROM pointsTable AS pnts, polygonTable AS polys WHERE ST_Contains(polys.geom, pnts.geom)
+
+..into this, run in parallel:
+
+INSERT INTO theOutputTable
+SELECT pnts.gid, polys.gid FROM pointsTable AS pnts, (SELECT * FROM polygonTable WHERE gid < 1000) AS polys
+  WHERE ST_Contains(polys.geom, pnts.geom)
+
+INSERT INTO theOutputTable
+SELECT pnts.gid, polys.gid FROM pointsTable AS pnts, (SELECT * FROM polygonTable WHERE gid >= 1000 AND gid < 2000) AS polys
+  WHERE ST_Contains(polys.geom, pnts.geom)
+
+INSERT INTO theOutputTable
+SELECT pnts.gid, polys.gid FROM pointsTable AS pnts, (SELECT * FROM polygonTable WHERE gid >= 3000 AND gid < 3000) AS polys
+  WHERE ST_Contains(polys.geom, pnts.geom)
+
 
 ## Usage
 

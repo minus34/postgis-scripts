@@ -1,22 +1,20 @@
 # parallel-processing
 
 
-NOTE: THIS IS A WORKS IN PROGRESS - CURRENTLY DOESN'T WORK IN POSTGRES 9.4
+NOTE: THIS DOCUMENTATION IS INCOMPLETE
 
 
 ## Description
 
-A Postgres function to enable simple parallel processing.
+A Postgres 9.3 function to enable simple parallel processing.
 
+Basic testing on my commodity home PC shows a 3-4 fold performance improvement going parallel on 6 CPUs versus 1.
 
-
-Basic testing on my commodity home PC shows a 3-4 fold performance improvement going parallel on 6 CPUs versus 1 (I have a slow HDD).
-
-A mid-range Windows 32 CPU server with an SSD hard drive has a 50x improvement.
+A mid-level Windows 32 CPU server with an SSD hard drive has seen improvements of up to 50x (test case was 13 million points intersecting ~20k polygons)
 
 ## How does it work 
 
-
+.....
 
 ## Usage
 

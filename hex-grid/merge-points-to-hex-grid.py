@@ -9,9 +9,14 @@
 # *********************************************************************************************************************
 
 # Import Python modules
+import math
 import psycopg2
 
 from datetime import datetime
+
+metres2degrees = (2.0 * math.pi * 6378137.0) / 360.0
+tile_width = 78271.52  # Standard width of a single 256 pixel map tile at zoom level one
+
 
 #######################################################################################################################
 # SCRIPT PARAMETERS
@@ -34,6 +39,7 @@ output_points_table_name = "mb_points_hex"
 cpus = 6
 
 # Grid parameters
+start_zoom_level = 1
 start_width = 1024  # in km
 multiple = 2
 min_width = 0.9
@@ -67,8 +73,20 @@ def main():
 
 def get_hex_ids(pg_cur):
     curr_width = start_width
+    zoom_level = start_zoom_level
 
     while curr_width > min_width:
+        # Set the number of decimal places for the output GeoJSON to reduce response size & speed up rendering
+        tolerance = (tile_width / math.pow(2.0, float(zoom_level))) / metres2degrees
+        places = 0
+        precision = 0.1
+
+        while precision > tolerance:
+            places += 1
+            precision /= 10
+
+        places += 1
+
         # Get table name friendly width
         curr_width_str = str(curr_width)
         curr_width_str = curr_width_str.replace(".", "_")
@@ -76,7 +94,7 @@ def get_hex_ids(pg_cur):
 
         pg_cur.execute("DROP TABLE IF EXISTS {0}.grid_{1}_counts".format(pg_schema, curr_width_str))
 
-        sql = "CREATE UNLOGGED TABLE {0}.grid_{2}_counts (count integer, geom geometry(POLYGON,4283, 2)) " \
+        sql = "CREATE UNLOGGED TABLE {0}.grid_{2}_counts (count integer, geojson text, geom geometry(POINT,4283, 2)) " \
               "WITH (OIDS=FALSE); ALTER TABLE hex.grid_{2}_counts OWNER TO {3};"\
             .format(pg_schema, points_table_name, curr_width_str, pg_user)
 
@@ -92,7 +110,7 @@ def get_hex_ids(pg_cur):
         # Get the 'what ever the attribute is' counts for each hex grid (using parallel processing)
         sql = "SELECT public.parsel('{0}.grid_{2}'," \
               "'gid'," \
-              "'SELECT sqt.count, grd.geom " \
+              "'SELECT sqt.count, ST_AsGeoJSON(grd.geom, {4}, 0), ST_Centroid(grd.geom) " \
               "FROM {0}.grid_{2} AS grd INNER JOIN (" \
               "SELECT bdys.gid, Count(*) AS count " \
               "FROM {0}.grid_{2} AS bdys INNER JOIN public.{1} as pnts ON ST_Contains(bdys.geom, pnts.geom) " \
@@ -100,20 +118,9 @@ def get_hex_ids(pg_cur):
               ") AS sqt ON grd.gid = sqt.gid'," \
               "'{0}.grid_{2}_counts'," \
               "'bdys'," \
-              "{3})".format(pg_schema, points_table_name, curr_width_str, str(cpus))
+              "{3})".format(pg_schema, points_table_name, curr_width_str, str(cpus), places)
 
-        # # Testing using group by to limit number of polygons - not worth the effort!
-        # sql = "SELECT public.parsel('{0}.grid_{2}'," \
-        #       "'gid'," \
-        #       "'SELECT sqt2.count, (ST_Dump(ST_Union(geom))).geom FROM (SELECT sqt.count, grd.geom " \
-        #       "FROM {0}.grid_{2} AS grd INNER JOIN (" \
-        #       "SELECT bdys.gid, Count(*) AS count " \
-        #       "FROM {0}.grid_{2} AS bdys INNER JOIN public.{1} as pnts ON ST_Contains(bdys.geom, pnts.geom) " \
-        #       "GROUP BY bdys.gid" \
-        #       ") AS sqt ON grd.gid = sqt.gid) AS sqt2 GROUP BY sqt2.count'," \
-        #       "'{0}.grid_{2}_counts'," \
-        #       "'bdys'," \
-        #       "{3})".format(pg_schema, points_table_name, curr_width_str, str(cpus))
+        # print sql
 
         pg_cur.execute(sql)
 
@@ -122,6 +129,7 @@ def get_hex_ids(pg_cur):
         print datetime.now().strftime('%Y-%m-%d %H:%M:%S') + " - {0} processed".format(curr_width_str,)
 
         curr_width /= multiple
+        zoom_level += 1
 
     return True
 

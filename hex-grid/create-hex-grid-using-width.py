@@ -18,16 +18,16 @@ pg_schema = "hex"
 hex_grid_table_name = "grid"
 
 # Grid parameters
-start_width = 1.0  # in km
+start_width = 0.5  # in km
 multiple = 2
-max_width = 1500
+min_width = 0.3
 
 # #####################################################################################################################
 
 startTime = datetime.now()
 
-print("--------------------------------------------------")
-print("PROCESSING STARTED")
+print "--------------------------------------------------"
+print datetime.now().strftime('%Y-%m-%d %H:%M:%S') + " - PROCESSING STARTED"
 
 
 def main():
@@ -52,7 +52,7 @@ def main():
 def get_hex_grids(pg_cur):
     curr_width = start_width
 
-    while curr_width < max_width:
+    while curr_width > min_width:
         # Get table name friendly width
         curr_width_str = str(curr_width)
         curr_width_str = curr_width_str.replace(".", "_")
@@ -78,8 +78,8 @@ def get_hex_grids(pg_cur):
 
         # Generate hex grids
         sql = "INSERT INTO {0}.{1}_{2} (pid, geom) " \
-              "SELECT * FROM hex_grid_width({2}, 84.0, -44.0, 161.5, -5.0, 4283, 3577, 4283)"\
-            .format(pg_schema, hex_grid_table_name, curr_width_str)
+              "SELECT * FROM hex_grid_width({3}, 84.0, -44.0, 161.5, -5.0, 4283, 3577, 4283)"\
+            .format(pg_schema, hex_grid_table_name, curr_width_str, curr_width)
 
         pg_cur.execute(sql)
 
@@ -87,7 +87,7 @@ def get_hex_grids(pg_cur):
 
         print datetime.now().strftime('%Y-%m-%d %H:%M:%S') + " - Grid %s processed" % curr_width_str
 
-        curr_width *= multiple
+        curr_width /= multiple
 
     return True
 

@@ -30,7 +30,7 @@ SELECT pnts.gid, polys.gid FROM pointsTable AS pnts, (SELECT * FROM polygonTable
   WHERE ST_Contains(polys.geom, pnts.geom)
 
 INSERT INTO theOutputTable
-SELECT pnts.gid, polys.gid FROM pointsTable AS pnts, (SELECT * FROM polygonTable WHERE gid >= 3000 AND gid < 3000) AS polys
+SELECT pnts.gid, polys.gid FROM pointsTable AS pnts, (SELECT * FROM polygonTable WHERE gid >= 2000 AND gid < 3000) AS polys
   WHERE ST_Contains(polys.geom, pnts.geom)
 
 

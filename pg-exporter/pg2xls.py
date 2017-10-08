@@ -36,32 +36,50 @@ def main():
     # pg_cur = pg_conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     pg_cur = pg_conn.cursor()
 
-    export_query(pg_cur, settings)
+    result = export_query(pg_cur, settings['sql'], settings['file'])
 
     pg_cur.close()
     pg_conn.close()
 
+    return result
 
-def export_query(pg_cur, settings):
+
+def export_query(pg_cur, sql, file):
     """Exports query to the chosen format"""
 
     start_time = datetime.now()
 
-    sql = settings['sql']
-
+    # Run query. Output result into in-memory stream formatted as CSV with the header row (NULLs are set to '')
     try:
-        # Get data from input DB
-        export_sql = "COPY ({0}) TO STDOUT".format(sql, )
+        export_sql = "COPY ({0}) TO STDOUT WITH NULL AS '' HEADER CSV".format(sql, )
 
         rows = io.StringIO()
         pg_cur.copy_expert(export_sql, rows)
-        rows.seek(0)
 
         logger.info("query took {}".format(datetime.now() - start_time))
+        start_time = datetime.now()
 
     except Exception as ex:
-        logger.fatal("unable to run query: {}".format(sql,))
+        logger.fatal("unable to run query: {}\n{}".format(sql, ex))
         return False
+
+    # Export in-memory CSV to file
+    try:
+        rows.seek(0)
+
+        file = open(file, 'w')
+        file.write(rows.getvalue())
+        file.close()
+
+        rows.close()
+
+        logger.info("file export took {}".format(datetime.now() - start_time))
+
+    except Exception as ex:
+        logger.fatal("unable to export to file: {}".format(ex,))
+        return False
+
+    return True
 
 
 if __name__ == '__main__':

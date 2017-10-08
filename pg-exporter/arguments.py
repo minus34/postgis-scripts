@@ -11,7 +11,7 @@ TEST_QUERY = "SELECT gid, gnaf_pid, street_locality_pid, locality_pid, alias_pri
              "FROM gnaf_201708.address_principals " \
              "WHERE locality_pid = 'NSW401'"
 
-TEST_TARGET_FILE = "/Users/hugh.saalmans/tmp/test.xlsx"
+TEST_TARGET_FILE = "/Users/hugh.saalmans/tmp/test.csv"
 
 
 # set the command line arguments for the script
@@ -38,7 +38,7 @@ def set_arguments():
         help='Password for Postgres server. Defaults to PGPASSWORD environment variable if set, '
              'otherwise \'password\'.')
 
-    parser.add_argument('--format', default='xls', help='The target format. Defaults to xls')
+    parser.add_argument('--format', default='csv', help='The target format. Defaults to CSV')
 
     parser.add_argument(
         '--sql',

@@ -7,11 +7,13 @@
 # *********************************************************************************************************************
 
 import arguments
+import pg_export
+
 import io
 import logging.config
 import os
 import psycopg2  # module needs to be installed
-import psycopg2.extras
+import zipfile
 
 from datetime import datetime
 
@@ -33,51 +35,37 @@ def main():
         return False
 
     pg_conn.autocommit = True
-    # pg_cur = pg_conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     pg_cur = pg_conn.cursor()
 
-    result = export_query(pg_cur, settings['sql'], settings['file'])
+    # get in-memory stream of data from query
+    data_stream = pg_export.run_query(pg_cur, settings['sql'])
+
+    # export data stream to flat file
+    if settings['format'] in ["csv", "tsv", "psv"]:
+        file_stream = pg_export.export_to_delimited_file(data_stream, settings['delimiter'])
+    elif settings['format'] == "xlsx":
+        file_stream = pg_export.export_to_xlsx(data_stream)
+    else:
+        logger.fatal("Invalid export file format - only csv, tsv, psv and xlsx are supported! - "
+                     "check your settings")
+        return False
+
+    # set file name in ZIP file
+    file_name = "{0}.{1}".format(settings['filename'], settings['format'])
+
+    # add result to in-memory ZIP file
+    zip_stream = io.BytesIO()
+    zip_file = zipfile.ZipFile(zip_stream, mode='w', compression=zipfile.ZIP_DEFLATED)
+    zip_file.writestr(file_name, file_stream.getvalue())
+
+    # write ZIP file to disk
+    zip_file_path = "{0}{1}{2}.zip".format(settings['filepath'], os.sep, settings['locpid'])
+    f = open(zip_file_path, "wb")  # use `wb` mode
+    f.write(zip_stream.getvalue())
+    f.close()
 
     pg_cur.close()
     pg_conn.close()
-
-    return result
-
-
-def export_query(pg_cur, sql, file):
-    """Exports query to the chosen format"""
-
-    start_time = datetime.now()
-
-    # Run query. Output result into in-memory stream formatted as CSV with the header row (NULLs are set to '')
-    try:
-        export_sql = "COPY ({0}) TO STDOUT WITH NULL AS '' HEADER CSV".format(sql, )
-
-        rows = io.StringIO()
-        pg_cur.copy_expert(export_sql, rows)
-
-        logger.info("query took {}".format(datetime.now() - start_time))
-        start_time = datetime.now()
-
-    except Exception as ex:
-        logger.fatal("unable to run query: {}\n{}".format(sql, ex))
-        return False
-
-    # Export in-memory CSV to file
-    try:
-        rows.seek(0)
-
-        file = open(file, 'w')
-        file.write(rows.getvalue())
-        file.close()
-
-        rows.close()
-
-        logger.info("file export took {}".format(datetime.now() - start_time))
-
-    except Exception as ex:
-        logger.fatal("unable to export to file: {}".format(ex,))
-        return False
 
     return True
 

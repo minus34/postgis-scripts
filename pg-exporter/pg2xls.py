@@ -13,6 +13,7 @@ import io
 import logging.config
 import os
 import psycopg2  # module needs to be installed
+import tempfile
 import zipfile
 
 from datetime import datetime
@@ -44,7 +45,7 @@ def main():
     if settings['format'] in ["csv", "tsv", "psv"]:
         file_stream = pg_export.export_to_delimited_file(data_stream, settings['delimiter'])
     elif settings['format'] == "xlsx":
-        file_stream = pg_export.export_to_xlsx(data_stream)
+        file_stream = pg_export.export_to_xlsx(data_stream, settings['temp_dir'].name)
     else:
         logger.fatal("Invalid export file format - only csv, tsv, psv and xlsx are supported! - "
                      "check your settings")

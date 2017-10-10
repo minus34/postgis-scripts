@@ -77,7 +77,7 @@ def export_to_delimited_file(data, delimiter):
     return output
 
 
-def export_to_xlsx(data):
+def export_to_xlsx(data, temp_dir):
 
     start_time = datetime.now()
 

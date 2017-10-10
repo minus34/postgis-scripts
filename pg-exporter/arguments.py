@@ -3,6 +3,7 @@
 
 import argparse
 import os
+import tempfile
 
 TEST_QUERY = "SELECT gid, gnaf_pid, street_locality_pid, locality_pid, alias_principal, primary_secondary, " \
              "building_name, lot_number, flat_number, level_number, number_first, number_last, street_name, " \
@@ -85,5 +86,8 @@ def get_settings(args):
 
     settings['pg_connect_string'] = "dbname='{0}' host='{1}' port='{2}' user='{3}' password='{4}'".format(
         settings['pg_db'], settings['pg_host'], settings['pg_port'], settings['pg_user'], settings['pg_password'])
+
+    # create temporary output directory for local storage of downloaded ZIP files (dir will die when script finishes
+    settings['temp_dir'] = tempfile.TemporaryDirectory()
 
     return settings

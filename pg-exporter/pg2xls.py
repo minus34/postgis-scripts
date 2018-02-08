@@ -13,7 +13,7 @@ import io
 import logging.config
 import os
 import psycopg2  # module needs to be installed
-import tempfile
+# import tempfile
 import zipfile
 
 from datetime import datetime

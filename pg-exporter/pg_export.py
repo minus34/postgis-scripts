@@ -9,29 +9,6 @@ from datetime import datetime
 import __main__ as m  # get the calling script
 
 
-def get_pif_summary(pg_cur, loc_pid):
-
-    start_time = datetime.now()
-
-    brands = list()
-
-    try:
-        pg_cur.execute("SELECT brand, SUM(si) AS si, Count(*) AS pif FROM pif.mv_all_pif "
-                       "WHERE locpid = '{}' GROUP BY brand ORDER BY brand".format(loc_pid,))
-        rows = pg_cur.fetchall()
-
-    except Exception as ex:
-        m.logger.fatal("unable to get PIF summary : {}".format(ex,))
-        return None
-
-    for row in rows:
-        brands.append(row[0])
-
-    m.logger.info("got PIF summary : {}".format(datetime.now() - start_time))
-
-    return brands
-
-
 def run_query(pg_cur, sql):
     """Exports query to the chosen format"""
 

@@ -1,4 +1,4 @@
-INSERT INTO geo_propertyloc.test_gnaf_meshblocks
+INSERT INTO testing.test_gnaf_meshblocks
   WITH polys AS (
     SELECT mb_code16,
       st_subdivide(geom, 16384) AS geom

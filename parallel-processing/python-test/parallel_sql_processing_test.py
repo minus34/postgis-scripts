@@ -155,7 +155,7 @@ def run_sql_multiprocessing(args):
     try:
         pg_cur.execute(the_sql)
         result = "SUCCESS"
-        logger.info("{} : {}".format(result, the_sql))
+        # logger.info("{} : {}".format(result, the_sql))
     except Exception as ex:
         result = "SQL FAILED! : {0} : {1}".format(the_sql, ex)
 

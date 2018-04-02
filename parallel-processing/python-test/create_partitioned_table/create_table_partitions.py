@@ -38,7 +38,7 @@ def main():
 
     # table and schema names - MUST BE THE SAME AS IN THE CREATE TABLE AND INSERT INTO SQL FILES
     settings["table_name"] = "address_principals_part"
-    settings["schema_name"] = "gnaf_201802"
+    settings["schema_name"] = "testing"
 
     # field that will partition the table
     settings["partition_field_name"] = "longitude"

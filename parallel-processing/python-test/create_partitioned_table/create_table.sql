@@ -1,4 +1,6 @@
-CREATE TABLE gnaf_201802.address_principals_part
+CREATE SCHEMA IF NOT EXISTS testing AUTHORIZATION postgres;
+
+CREATE TABLE testing.address_principals_part
 (
   gnaf_pid text NOT NULL,
   street_locality_pid text NOT NULL,
@@ -29,7 +31,6 @@ CREATE TABLE gnaf_201802.address_principals_part
   reliability smallint NOT NULL,
   geom geometry(Point,4283) NOT NULL
 ) PARTITION BY RANGE (longitude)
-WITH (OIDS = FALSE)
-TABLESPACE geo;
+WITH (OIDS = FALSE);
 
-ALTER TABLE gnaf_201802.address_principals_part OWNER to postgres;
+ALTER TABLE testing.address_principals_part OWNER to postgres;

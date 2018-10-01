@@ -1,7 +1,7 @@
 
--- run point in polygon test with standard geom field storage --  mins
-DROP TABLE IF EXISTS testing.pip_test_standard;
-CREATE TABLE testing.pip_test_standard AS
+-- run point in polygon test with standard geom field storage -- Execute times 1,719.268, 1,688.382
+DROP TABLE IF EXISTS testing.pip_test_external;
+CREATE TABLE testing.pip_test_external AS
   SELECT gnaf.gnaf_pid,
          mb.mb_11code
   FROM testing.abs_2011_mb AS mb

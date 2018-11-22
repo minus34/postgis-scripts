@@ -1,42 +1,46 @@
 
+-- CREATE SCHEMA testing;
+-- ALTER SCHEMA SET owner to postgres;
+
+
 -- create meshblocks table
-DROP TABLE if exists testing.abs_2011_mb;
-CREATE TABLE testing.abs_2011_mb (
-	gid int4 NOT NULL,
-	mb_11code text NULL,
-	mb_category text NULL,
-	sa1_11main float8 NULL,
-	sa1_11_7cd int4 NULL,
-	sa2_11main int4 NULL,
-	sa2_11_5cd int4 NULL,
-	sa2_11name text NULL,
-	sa3_11code int4 NULL,
-	sa3_11name text NULL,
-	sa4_11code int4 NULL,
-	sa4_11name text NULL,
-	gcc_11code text NULL,
-	gcc_11name text NULL,
-	state text NULL,
-	area_sqm numeric NULL,
-	mb11_pop int4 NULL,
-	mb11_dwell int4 NULL,
-	geom geometry(Multipolygon,4283) NULL
+DROP TABLE if exists testing.abs_2016_mb;
+CREATE TABLE testing.abs_2016_mb (
+    gid integer NOT NULL,
+    mb_16code text NOT NULL,
+    mb_category text,
+    sa1_16main double precision,
+    sa1_16_7cd integer,
+    sa2_16main integer,
+    sa2_16_5cd integer,
+    sa2_16name text,
+    sa3_16code integer,
+    sa3_16name text,
+    sa4_16code integer,
+    sa4_16name text,
+    gcc_16code text,
+    gcc_16name text,
+    state text,
+    area_sqm numeric,
+    mb16_pop integer,
+    mb16_dwell integer,
+    geom geometry(MultiPolygon,4283) NULL
 )
 WITH (OIDS = FALSE);
-ALTER TABLE testing.abs_2011_mb OWNER TO postgres;
+ALTER TABLE testing.abs_2016_mb OWNER TO postgres;
 
 -- set geom column to decompressed
-ALTER TABLE testing.abs_2011_mb ALTER COLUMN geom SET STORAGE EXTERNAL;
+ALTER TABLE testing.abs_2016_mb ALTER COLUMN geom SET STORAGE EXTERNAL;
 
 -- insert data
-insert into testing.abs_2011_mb
-select * from admin_bdys_201808.abs_2011_mb;
+insert into testing.abs_2016_mb
+select * from admin_bdys_201811.abs_2016_mb;
 
 -- add indexes and cluster on geom index
-ALTER TABLE testing.abs_2011_mb ADD CONSTRAINT abs_2011_mb_pk PRIMARY KEY (gid);
+ALTER TABLE testing.abs_2016_mb ADD CONSTRAINT abs_2016_mb_pk PRIMARY KEY (gid);
 
-CREATE INDEX abs_2011_mb_geom_idx ON testing.abs_2011_mb USING gist (geom);
-ALTER TABLE testing.abs_2011_mb CLUSTER ON abs_2011_mb_geom_idx;
+CREATE INDEX abs_2016_mb_geom_idx ON testing.abs_2016_mb USING gist (geom);
+ALTER TABLE testing.abs_2016_mb CLUSTER ON abs_2016_mb_geom_idx;
 
 
 -- create GNAF table
@@ -65,7 +69,7 @@ CREATE TABLE testing.address_principals
     locality_postcode text,
     confidence smallint NOT NULL,
     legal_parcel_id text,
-    mb_2011_code bigint,
+    mb_2016_code bigint,
     mb_2016_code bigint,
     latitude numeric(10,8) NOT NULL,
     longitude numeric(11,8) NOT NULL,
@@ -81,7 +85,7 @@ ALTER TABLE testing.address_principals ALTER COLUMN geom SET STORAGE EXTERNAL;
 
 -- insert data
 insert into testing.address_principals
-select * from gnaf_201808.address_principals;
+select * from gnaf_201811.address_principals;
 
 -- add indexes and cluster on geom index
 ALTER TABLE testing.address_principals ADD CONSTRAINT address_principals_pk PRIMARY KEY (gnaf_pid);

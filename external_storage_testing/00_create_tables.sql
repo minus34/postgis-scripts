@@ -33,14 +33,18 @@ ALTER TABLE testing.abs_2016_mb OWNER TO postgres;
 ALTER TABLE testing.abs_2016_mb ALTER COLUMN geom SET STORAGE EXTERNAL;
 
 -- insert data
-insert into testing.abs_2016_mb
-select * from admin_bdys_201811.abs_2016_mb;
+INSERT INTO testing.abs_2016_mb
+SELECT * FROM admin_bdys_201811.abs_2016_mb;
+
+ANALYZE testing.abs_2016_mb;
 
 -- add indexes and cluster on geom index
 ALTER TABLE testing.abs_2016_mb ADD CONSTRAINT abs_2016_mb_pk PRIMARY KEY (gid);
 
 CREATE INDEX abs_2016_mb_geom_idx ON testing.abs_2016_mb USING gist (geom);
 ALTER TABLE testing.abs_2016_mb CLUSTER ON abs_2016_mb_geom_idx;
+
+ANALYZE testing.abs_2016_mb;
 
 
 -- create GNAF table
@@ -69,7 +73,7 @@ CREATE TABLE testing.address_principals
     locality_postcode text,
     confidence smallint NOT NULL,
     legal_parcel_id text,
-    mb_2016_code bigint,
+    mb_2011_code bigint,
     mb_2016_code bigint,
     latitude numeric(10,8) NOT NULL,
     longitude numeric(11,8) NOT NULL,
@@ -84,8 +88,10 @@ ALTER TABLE testing.address_principals OWNER to postgres;
 ALTER TABLE testing.address_principals ALTER COLUMN geom SET STORAGE EXTERNAL;
 
 -- insert data
-insert into testing.address_principals
-select * from gnaf_201811.address_principals;
+INSERT INTO testing.address_principals
+SELECT * FROM gnaf_201811.address_principals;
+
+ANALYZE testing.address_principals;
 
 -- add indexes and cluster on geom index
 ALTER TABLE testing.address_principals ADD CONSTRAINT address_principals_pk PRIMARY KEY (gnaf_pid);
@@ -94,3 +100,5 @@ CREATE INDEX address_principals_geom_idx ON testing.address_principals USING gis
 ALTER TABLE testing.address_principals CLUSTER ON address_principals_geom_idx;
 
 CREATE INDEX address_principals_gid_idx ON testing.address_principals USING btree (gid);
+
+ANALYZE testing.address_principals;

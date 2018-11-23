@@ -3,12 +3,21 @@
 # SSH login
 
 user_name="ubuntu"
-ip_address="13.236.52.8"
+ip_address="54.153.134.220"
 pem_file="/Users/s57405/.aws/minus34/postgres_testing.pem"
 
-sudo chmod 400 ${pem_file}
+#sudo chmod 400 ${pem_file}
 
 ssh -i ${pem_file} ${user_name}@${ip_address}
+
+#get things ready
+
+sudo DEBIAN_FRONTEND=noninteractive apt -q -y update
+sudo DEBIAN_FRONTEND=noninteractive apt -q -y upgrade
+
+#sudo DEBIAN_FRONTEND=noninteractive apt -q -y install awscli
+
+#aws s3 cp s3://minus34.com/opendata/psma-201811/admin-bdys-201811.dmp ~/tmp
 
 
 
@@ -70,6 +79,14 @@ sudo service postgresql restart
 
 
 # --------------------------------------------------------------------------------------
-# copy dump files from s3
+# copy dump files from s3 and load them
 # --------------------------------------------------------------------------------------
+
+sudo wget http://minus34.com/opendata/psma-201811/admin-bdys-201811.dmp ~/tmp
+sudo wget http://minus34.com/opendata/psma-201811/gnaf-201811.dmp ~/tmp
+
+psql -d geo -p 5432 -U postgres -c "CREATE EXTENSION IF NOT EXISTS postgis;"
+
+/usr/lib/postgresql/11/bin/pg_restore -Fc -d postgres -p 5432 -U postgres -h localhost ~/gnaf-201811.dmp
+/usr/lib/postgresql/11/bin/pg_restore -Fc -d postgres -p 5432 -U postgres -h localhost ~/admin-bdys-201811.dmp
 

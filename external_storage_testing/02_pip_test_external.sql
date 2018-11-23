@@ -1,5 +1,5 @@
 
--- run point in polygon test with standard geom field storage -- Execute times 1,719.268, 1,688.382
+-- run point in polygon test with standard geom field storage -- Execute times 34 m 18 s
 DROP TABLE IF EXISTS testing.pip_test_external;
 CREATE TABLE testing.pip_test_external AS
   SELECT gnaf.gnaf_pid,
@@ -9,7 +9,7 @@ CREATE TABLE testing.pip_test_external AS
   on st_intersects(gnaf.geom, mb.geom);
 
 
--- in-memory -- 42 m 5 s
+-- in-memory -- 32 m 12 s
 DROP TABLE IF EXISTS pip_test_external;
 CREATE TEMPORARY TABLE pip_test_external AS
   SELECT gnaf.gnaf_pid,

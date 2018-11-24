@@ -1,11 +1,11 @@
 
 -- CREATE SCHEMA testing;
--- ALTER SCHEMA SET owner to postgres;
 
 
 -- create meshblocks table
 DROP TABLE if exists testing.abs_2016_mb;
 CREATE TABLE testing.abs_2016_mb (
+--     gid serial NOT NULL,
     gid integer NOT NULL,
     mb_16code text NOT NULL,
     mb_category text,
@@ -32,9 +32,48 @@ ALTER TABLE testing.abs_2016_mb OWNER TO postgres;
 -- set geom column to decompressed
 ALTER TABLE testing.abs_2016_mb ALTER COLUMN geom SET STORAGE EXTERNAL;
 
--- insert data
-INSERT INTO testing.abs_2016_mb
-SELECT * FROM admin_bdys_201811.abs_2016_mb;
+-- insert data -- 385,263 rows
+INSERT INTO testing.abs_2016_mb (
+    gid,
+    mb_16code,
+    mb_category,
+    sa1_16main,
+    sa1_16_7cd,
+    sa2_16main,
+    sa2_16_5cd,
+    sa2_16name,
+    sa3_16code,
+    sa3_16name,
+    sa4_16code,
+    sa4_16name,
+    gcc_16code,
+    gcc_16name,
+    state,
+    area_sqm,
+    mb16_pop,
+    mb16_dwell,
+    geom)
+SELECT gid,
+       mb_16code,
+       mb_category,
+       sa1_16main,
+       sa1_16_7cd,
+       sa2_16main,
+       sa2_16_5cd,
+       sa2_16name,
+       sa3_16code,
+       sa3_16name,
+       sa4_16code,
+       sa4_16name,
+       gcc_16code,
+       gcc_16name,
+       state,
+       area_sqm,
+       mb16_pop,
+       mb16_dwell,
+       geom
+--        ST_Subdivide(geom, 512)
+FROM admin_bdys_201811.abs_2016_mb;
 
 ANALYZE testing.abs_2016_mb;
 
@@ -47,7 +86,7 @@ ALTER TABLE testing.abs_2016_mb CLUSTER ON abs_2016_mb_geom_idx;
 ANALYZE testing.abs_2016_mb;
 
 
--- create GNAF table
+-- create GNAF table -- 13,810,270
 DROP TABLE IF EXISTS testing.address_principals;
 CREATE TABLE testing.address_principals
 (

@@ -18,4 +18,4 @@ work_mem = 256MB
 maintenance_work_mem = 1GB
 
 wal_level = minimal
-max_wal_senders = 0	
+max_wal_senders = 0

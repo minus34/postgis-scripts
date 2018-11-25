@@ -75,7 +75,7 @@ ALTER TABLE testing.abs_2016_mb_subd OWNER TO postgres;
 -- set geom column to decompressed
 ALTER TABLE testing.abs_2016_mb_subd ALTER COLUMN geom SET STORAGE EXTERNAL;
 
--- insert data -- 385,263 rows
+-- insert data -- 385,263 rows (512 coords max); 430,855 (256 coords max)
 INSERT INTO testing.abs_2016_mb_subd (
     mb_16code,
     mb_category,
@@ -112,7 +112,7 @@ SELECT mb_16code,
        area_sqm,
        mb16_pop,
        mb16_dwell,
-       ST_Subdivide(geom, 512)
+       ST_Subdivide(geom, 256)
 FROM admin_bdys_201811.abs_2016_mb;
 
 ANALYZE testing.abs_2016_mb_subd;

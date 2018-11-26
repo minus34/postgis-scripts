@@ -66,3 +66,6 @@ CREATE TABLE testing.pip_test_external AS
 
 
 SELECT Count(*) FROM testing.pip_test_external;
+
+
+-- 8 parallel processes, ST_Subdivide 1024 coords -- 0:14:27.275182

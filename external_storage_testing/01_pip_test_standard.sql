@@ -51,3 +51,8 @@ CREATE TABLE testing.pip_test_standard AS
   FROM admin_bdys_201811.abs_2016_mb_analysis AS mb
          inner join gnaf_201811.address_principals as gnaf
            on st_intersects(gnaf.geom, mb.geom);
+
+
+
+
+-- 8 parallel processes, ST_Subdivide 512 coords -- 0:14:20.671523

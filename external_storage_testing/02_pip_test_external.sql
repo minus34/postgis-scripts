@@ -8,6 +8,10 @@
     -- 32 m 26 s 238 ms
     -- 32 m 27 s 546 ms
 
+-- PG 11 Execute times - ST_Subdivide - 1024 coords max
+
+
+
 -- PG 11 Execute times - ST_Subdivide - 512 coords max
     -- 32 m 2 s 126 ms
     -- 30 m 42 s 740 ms
@@ -15,6 +19,10 @@
     -- 30 m 41 s 439 ms
     -- 30 m 43 s 38 ms
 
+-- PG 11 Execute times - ST_Subdivide - 256 coords max
+    -- 36 m 1 s 220 ms
+    -- 36 m 40 s 529 ms
+    -- 36 m 28 s 737 ms
 
 DROP TABLE IF EXISTS testing.pip_test_external;
 CREATE TABLE testing.pip_test_external AS

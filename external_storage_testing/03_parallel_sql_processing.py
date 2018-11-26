@@ -27,9 +27,9 @@ def set_arguments():
         description='blah blah blah')
 
     parser.add_argument(
-        '--max-processes', type=int, default=4,
+        '--max-processes', type=int, default=8,
         help='Maximum number of parallel processes to use. (Set it to the number of cores on the '
-             'Postgres server minus 2. Defaults to 4.')
+             'Postgres server minus 2. Defaults to 8.')
 
     # PG Options
     parser.add_argument(
@@ -105,8 +105,9 @@ def main():
         partition_start_value = settings["partition_ranges"][current_child_table_num - 1]
         partition_end_value = settings["partition_ranges"][current_child_table_num]
 
-        where_clause = " WHERE latitude > {} AND latitude <= {};".format(partition_start_value, partition_end_value)
+        where_clause = " WHERE longitude > {} AND longitude <= {};".format(partition_start_value, partition_end_value)
         sql = settings['sql'].replace(";", where_clause)
+        # print(sql)
 
         sql_list.append(sql)
 

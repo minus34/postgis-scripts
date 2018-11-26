@@ -63,3 +63,6 @@ CREATE TABLE testing.pip_test_external AS
   FROM testing.abs_2016_mb_analysis AS mb
          inner join testing.address_principals as gnaf
            on st_intersects(gnaf.geom, mb.geom);
+
+
+SELECT Count(*) FROM testing.pip_test_external;

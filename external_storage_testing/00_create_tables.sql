@@ -47,8 +47,8 @@ ANALYZE testing.abs_2016_mb;
 
 
 -- create subdivided meshblocks table
-DROP TABLE if exists testing.abs_2016_mb_subd;
-CREATE TABLE testing.abs_2016_mb_subd (
+DROP TABLE IF EXISTS testing.abs_2016_mb_analysis;
+CREATE TABLE testing.abs_2016_mb_analysis (
     gid serial NOT NULL,
     mb_16code text NOT NULL,
     mb_category text,
@@ -70,13 +70,13 @@ CREATE TABLE testing.abs_2016_mb_subd (
     geom geometry(Polygon,4283) NULL
 )
 WITH (OIDS = FALSE);
-ALTER TABLE testing.abs_2016_mb_subd OWNER TO postgres;
+ALTER TABLE testing.abs_2016_mb_analysis OWNER TO postgres;
 
 -- set geom column to decompressed
-ALTER TABLE testing.abs_2016_mb_subd ALTER COLUMN geom SET STORAGE EXTERNAL;
+ALTER TABLE testing.abs_2016_mb_analysis ALTER COLUMN geom SET STORAGE EXTERNAL;
 
 -- insert data -- 385,263 rows (512 coords max); 430,855 (256 coords max)
-INSERT INTO testing.abs_2016_mb_subd (
+INSERT INTO testing.abs_2016_mb_analysis (
     mb_16code,
     mb_category,
     sa1_16main,
@@ -115,15 +115,15 @@ SELECT mb_16code,
        ST_Subdivide(geom, 256)
 FROM admin_bdys_201811.abs_2016_mb;
 
-ANALYZE testing.abs_2016_mb_subd;
+ANALYZE testing.abs_2016_mb_analysis;
 
 -- add indexes and cluster on geom index
-ALTER TABLE testing.abs_2016_mb_subd ADD CONSTRAINT abs_2016_mb_subd_pk PRIMARY KEY (gid);
+ALTER TABLE testing.abs_2016_mb_analysis ADD CONSTRAINT abs_2016_mb_analysis_pk PRIMARY KEY (gid);
 
-CREATE INDEX abs_2016_mb_subd_geom_idx ON testing.abs_2016_mb_subd USING gist (geom);
-ALTER TABLE testing.abs_2016_mb_subd CLUSTER ON abs_2016_mb_subd_geom_idx;
+CREATE INDEX abs_2016_mb_analysis_geom_idx ON testing.abs_2016_mb_analysis USING gist (geom);
+ALTER TABLE testing.abs_2016_mb_analysis CLUSTER ON abs_2016_mb_analysis_geom_idx;
 
-ANALYZE testing.abs_2016_mb_subd;
+ANALYZE testing.abs_2016_mb_analysis;
 
 
 -- create GNAF table -- 13,810,270

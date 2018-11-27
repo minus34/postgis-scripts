@@ -1,6 +1,8 @@
 # External Storage Testing
 
-The PostGIS team recently posted on Twitter...
+At the <month><year> code sprint - the PostGIS contributors did some testing on the performance of storing the geometry field externally (i.e. uncompressed).
+
+For small datasets - there is a 
 
 
 <html>
@@ -10,28 +12,49 @@ The PostGIS team recently posted on Twitter...
 
 
 
-## Settings
+## Postgres/PostGIS Settings
 
-shared_buffers = 8GB
-temp_buffers = 2GB
-work_mem = 256MB
-maintenance_work_mem = 1GB
+Postgres 11
 
-wal_level = minimal
-max_wal_senders = 0
 
-Polygons split where number of coordinates > 512 (using ST_Subdivide)
+- shared_buffers = 8GB
+- temp_buffers = 2GB
+- work_mem = 256MB
+- maintenance_work_mem = 1GB
+- wal_level = minimal
+- max_wal_senders = 0
+
+## Data
+
+- PSMA GNAF Address Principals ( rows)
+- ABS 2016 Census Meshblocks ( rows)
+- Meshblock polygons split where number of coordinates > 512 (using ST_Subdivide)
+
+## Results
+
+### Single query
+
+#### Standard storage
+
+
+
+#### External (uncompressed) storage
+
+    -- 32 m 2 s 126 ms
+    -- 30 m 42 s 740 ms
+    -- 30 m 48 s 532 ms
+    -- 30 m 41 s 439 ms
+    -- 30 m 43 s 38 ms
 
 
 ### Parallel processing
 
 #### Standard storage
 
-- 6 processes = 0:14:58.844503
 - 8 processes = 0:14:20.671523
-- 20 processes = 0:13:34.469588
+- 20 processes = 0:14:03.023990
 
-#### External (decompressed storage)
+#### External (uncompressed) storage
 
 - 8 processes = 0:14:27.275182
-- 20 processes = 
+- 20 processes = 0:14:24.489754

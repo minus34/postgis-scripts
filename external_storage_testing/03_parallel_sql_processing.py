@@ -57,8 +57,13 @@ def set_arguments():
 def get_settings(args):
     settings = dict()
 
-    # options are "coordinates" (AU only) or "gid" for an integer sequential ID
+    # how do you want to split the options are "coordinates" (AU only) or "gid" for an integer sequential ID
     settings["partition_type"] = "coordinates"
+
+    # schema and name of the tabvle to split
+    settings["split_tablename"] = "testing.address_principals"
+    # settings["split_tablename"] = "gnaf_201811.address_principals"
+
 
     # longitudes that break the AUS population into 20 roughly equal counts
     settings['partition_ranges'] = [96.8215, 115.8473, 120.5748, 138.6046, 142.4924, 144.7469, 144.9711, 145.0797,
@@ -108,8 +113,9 @@ def main():
         partition_start_value = settings["partition_ranges"][current_child_table_num - 1]
         partition_end_value = settings["partition_ranges"][current_child_table_num]
 
-        where_clause = " WHERE longitude > {} AND longitude <= {};".format(partition_start_value, partition_end_value)
-        sql = settings['sql'].replace(";", where_clause)
+        where_clause = "{} WHERE longitude > {} AND longitude <= {}"\
+            .format(settings["split_tablename"], partition_start_value, partition_end_value)
+        sql = settings['sql'].replace(settings["split_tablename"], where_clause)
         # print(sql)
 
         sql_list.append(sql)

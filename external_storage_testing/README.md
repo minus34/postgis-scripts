@@ -19,3 +19,19 @@ maintenance_work_mem = 1GB
 
 wal_level = minimal
 max_wal_senders = 0
+
+Polygons split where number of coordinates > 512 (using ST_Subdivide)
+
+
+### Parallel processing
+
+#### Standard storage
+
+- 6 processes = 0:14:58.844503
+- 8 processes = 0:14:20.671523
+- 20 processes = 0:13:34.469588
+
+#### External (decompressed storage)
+
+- 8 processes = 0:14:27.275182
+- 20 processes = 

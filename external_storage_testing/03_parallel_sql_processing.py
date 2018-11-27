@@ -27,9 +27,9 @@ def set_arguments():
         description='blah blah blah')
 
     parser.add_argument(
-        '--max-processes', type=int, default=8,
+        '--max-processes', type=int, default=20,
         help='Maximum number of parallel processes to use. (Set it to the number of cores on the '
-             'Postgres server minus 2. Defaults to 8.')
+             'Postgres server minus 2. Defaults to 6.')
 
     # PG Options
     parser.add_argument(
@@ -56,6 +56,9 @@ def set_arguments():
 # create the dictionary of settings
 def get_settings(args):
     settings = dict()
+
+    # options are "coordinates" (AU only) or "gid" for an integer sequential ID
+    settings["partition_type"] = "coordinates"
 
     # longitudes that break the AUS population into 20 roughly equal counts
     settings['partition_ranges'] = [96.8215, 115.8473, 120.5748, 138.6046, 142.4924, 144.7469, 144.9711, 145.0797,

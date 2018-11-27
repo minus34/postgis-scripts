@@ -112,7 +112,7 @@ SELECT mb_16code,
        area_sqm,
        mb16_pop,
        mb16_dwell,
-       ST_Subdivide(geom, 1024)
+       ST_Subdivide(geom, 512)
 FROM admin_bdys_201811.abs_2016_mb;
 
 ANALYZE testing.abs_2016_mb_analysis;

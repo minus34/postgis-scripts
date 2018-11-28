@@ -36,15 +36,19 @@ Postgres 11
 
 #### Standard storage
 
-
+    32 m 50 s 365 ms
+    32 m 03 s 945 ms
+    32 m 16 s 372 ms
+    32 m 08 s 194 ms
+    32 m 07 s 89 ms
 
 #### External (uncompressed) storage
 
-    -- 32 m 2 s 126 ms
-    -- 30 m 42 s 740 ms
-    -- 30 m 48 s 532 ms
-    -- 30 m 41 s 439 ms
-    -- 30 m 43 s 38 ms
+    33 m 24 s 633 ms
+    32 m 29 s 386 ms
+    32 m 26 s 970 ms
+    32 m 26 s 238 ms
+    32 m 27 s 546 ms
 
 
 ### Parallel processing

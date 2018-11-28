@@ -9,7 +9,11 @@
     -- 32 m 7 s 89 ms
 
 -- PG 11 Execute times - ST_Subdivide - 512 coords max
-
+-- 33 m 38 s 798 ms
+-- 33 m 14 s 164 ms
+-- 33 m 3 s 373 ms
+-- 33 m 22 s 307 ms
+-- 33 m 33 s 854 ms
 
 
 DROP TABLE IF EXISTS testing.pip_test_standard;
